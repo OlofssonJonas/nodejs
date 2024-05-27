@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 const UserModel = require("./model");
 
 router.get('/get', async(req, res) => {
@@ -9,10 +10,12 @@ router.get('/get', async(req, res) => {
 
 router.post('/register', async(req, res) => {
     try {
-        const { name, email } = req.body
+        const { name, email, password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        console.log(hashedPassword);
         const existingUser = await UserModel.findOne({email: req.body.email});
         if(!existingUser) {
-            const newUser = await UserModel.create(req.body);
+            const newUser = await UserModel.create({name: name, email: email, password: hashedPassword});
             console.log('17', newUser);
              res.status(201).json({message: 'User created', user: newUser});
         }else{
@@ -23,5 +26,13 @@ router.post('/register', async(req, res) => {
         res.status(500).json({message: 'Server error'})
     }
 });
+
+router.post("/signin", (req, res) => {
+    try {
+        console.log(req.body);
+    } catch (error) {
+        
+    }
+})
 
 module.exports = router;
