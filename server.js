@@ -1,7 +1,7 @@
 const express = require("express");
 const connectDB = require("./src/db");
 const app = express();
-const Router = require("./src/router");
+const Router = require("./src/routes/user.route");
 const cookieSession = require("cookie-session");
 
 app.use(express.json());
@@ -17,7 +17,8 @@ app.use("/api", Router);
 
 connectDB();
 
+PORT=2002;
 
 
-app.listen(3000, () => console.log('server up and running'));
+app.listen(PORT, () => console.log(`server up and running on port ${PORT}`));
 

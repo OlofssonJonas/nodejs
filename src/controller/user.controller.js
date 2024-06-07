@@ -1,16 +1,12 @@
-const express = require("express");
-const router = express.Router();
+const UserModel = require("../model");
 const bcrypt = require("bcrypt");
-const UserModel = require("./model");
-const cookieSession = require("../server");
 
-
-router.get("/get", async (req, res) => {
+const getUsers = async (req, res) => {
   const name = await UserModel.find();
   res.status(200).json(name);
-});
+};
 
-router.post("/register", async (req, res) => {
+const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -29,9 +25,9 @@ router.post("/register", async (req, res) => {
     console.log(error);
     res.status(500).json({ message: "Server error" });
   }
-});
+};
 
-router.post("/login", async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -41,15 +37,17 @@ router.post("/login", async (req, res) => {
       existingUser.password
     );
     if (hashedPassword) {
-        res.cookie("user", existingUser.email);
+      res.cookie("user", existingUser._id);
+      console.log(existingUser._id);
       res.status(200).json({ message: "You are logged in" });
     } else {
-      res.status(400).json({ message: "Wrong credentials" })
+      res.status(400).json({ message: "Wrong credentials" });
     }
-} catch (error) {
+  } catch (error) {
     res.status(500).json({ message: "Server error" });
     console.log(error);
-}
-});
+  }
+};
 
-module.exports = router;
+
+module.exports = { getUsers, registerUser, loginUser };
