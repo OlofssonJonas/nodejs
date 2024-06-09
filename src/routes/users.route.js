@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {getUsers, registerUser, loginUser} = require("../controller/user.controller");
+const {getUsers, registerUser, loginUser} = require("../controller/users.controller");
 const cookieSession = require("../../server");
 
 

@@ -1,7 +1,8 @@
 const express = require("express");
 const connectDB = require("./src/db");
 const app = express();
-const Router = require("./src/routes/user.route");
+const userRouter = require("./src/routes/users.route");
+const productRouter = require("./src/routes/products.route");
 const cookieSession = require("cookie-session");
 
 app.use(express.json());
@@ -13,7 +14,7 @@ app.use(cookieSession({
     sameSite: true
 }));
 
-app.use("/api", Router);
+app.use("/api", userRouter, productRouter);
 
 connectDB();
 
