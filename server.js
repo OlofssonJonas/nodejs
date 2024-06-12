@@ -6,12 +6,11 @@ const productRouter = require("./src/routes/products.route");
 const cookieSession = require("cookie-session");
 
 app.use(express.json());
+
 app.use(cookieSession({
-    name: 'session',
     secret: 's3cr3t',
-    maxAge: 1000 * 60,
-    httpOnly: true,
-    sameSite: true
+    maxAge: 1000 * 10,
+    httpOnly: false,
 }));
 
 app.use("/api", userRouter, productRouter);

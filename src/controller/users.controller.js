@@ -4,6 +4,8 @@ const bcrypt = require("bcrypt");
 
 const getUsers = async (req, res) => {
   const name = await UserModel.find({}, "-password");
+  console.log('session: ', req.session);
+  console.log(('cookie in req: ', req.headers.cookie));
   res.status(200).json(name);
 };
 
@@ -45,7 +47,10 @@ const loginUser = async (req, res) => {
       existingUser.password
     );
     if (matchedPassword) {
-      res.cookie("user", existingUser._id);
+    
+      req.session = { email };
+
+     //console.log('Session:', req.session);
       res.status(200).json({ message: "You are logged in" });
     } else {
       res.status(400).json({ message: "Wrong credentials" });
@@ -56,4 +61,12 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, registerUser, loginUser };
+
+const logoutUser = (req, res) => {
+  req.session = null;
+  console.log(req.session);
+  console.log(req.headers.cookie)
+  res.status(200).json({message: 'You are logged out'});
+}
+
+module.exports = { getUsers, registerUser, loginUser, logoutUser };
