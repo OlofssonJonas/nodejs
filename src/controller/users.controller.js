@@ -3,9 +3,7 @@ const UserModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
 
 const getUsers = async (req, res) => {
-  const name = await UserModel.find({}, "-password");
-  console.log('session: ', req.session);
-  console.log(('cookie in req: ', req.headers.cookie));
+  const name = await UserModel.find({}).sort({name: 1});
   res.status(200).json(name);
 };
 
@@ -14,7 +12,7 @@ const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
     const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
-    if (!emailRegex.test(email) || !name || !name.length < 4 || !password) {
+    if (!emailRegex.test(email) || !name || name.length < 4 || !password) {
       return res.status(404).json({ message: "Invalid credentials" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -69,4 +67,10 @@ const logoutUser = (req, res) => {
   res.status(200).json({message: 'You are logged out'});
 }
 
-module.exports = { getUsers, registerUser, loginUser, logoutUser };
+const deleteUser = async(req, res) => {
+  const id = req.params.id;
+  const deletedUser = await UserModel.findByIdAndDelete(id);
+  res.status(200).json({message: `User with id ${id} is deleted, {deletedUser}`})
+}
+
+module.exports = { getUsers, registerUser, loginUser, logoutUser, deleteUser };
